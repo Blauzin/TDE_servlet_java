@@ -1,9 +1,3 @@
-com\gradecalculator\RA.class
-com\gradecalculator\Subject.class
-com\gradecalculator\DatabaseConnection.class
-com\gradecalculator\LoadSubjectServlet.class
-com\gradecalculator\LoadStudentServlet.class
-com\gradecalculator\SearchStudentServlet.class
-com\gradecalculator\RegisterStudentServlet.class
-com\gradecalculator\Component.class
-com\gradecalculator\Student.class
+com\example\LoginServlet.class
+com\example\UserDAO.class
+com\example\User.class
