@@ -4,38 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Sign Up</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-
-        .container {
-            max-width: 300px;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .error,
-        .success {
-            margin-bottom: 15px;
-        }
-
-        .error {
-            color: red;
-        }
-
-        .success {
-            color: green;
-        }
-    </style>
+    <link rel="stylesheet" href="login.css">
 </head>
 
 <body>
     <div class="container">
-        <h2>Sign Up</h2>
+        <h2 class="title">Sign Up</h2>
         <form action="signup" method="post">
             <div class="error" id="errorMessage" style="display: none;">
                 Username already exists or invalid input
@@ -43,20 +17,20 @@
             <div class="success" id="successMessage" style="display: none;">
                 User registered successfully
             </div>
-            <div>
+            <div class="field">
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" required>
             </div>
-            <div>
+            <div class="field">
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" required>
             </div>
             <div>
-                <button type="submit">Sign Up</button>
+                <button class="btn" type="submit">Sign Up</button>
             </div>
         
         </form>
-        <button onclick="window.location.href='login.html'">Return to Login</button>
+        <button class="btn" onclick="window.location.href='login.html'">Return to Login</button>
     </div>
     <script>
         const urlParams = new URLSearchParams(window.location.search);

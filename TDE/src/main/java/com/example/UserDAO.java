@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public class UserDAO {
     private String jdbcURL = "jdbc:mysql://localhost:3306/login_db";
     private String jdbcUsername = "root";
-    private String jdbcPassword = "210904";
+    private String jdbcPassword = "1234";
 
     private static final String SELECT_USER_BY_USERNAME = "SELECT id, username, password FROM users WHERE username = ?";
 

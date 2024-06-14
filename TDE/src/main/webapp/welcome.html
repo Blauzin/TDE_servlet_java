@@ -4,18 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <title>Welcome</title>
+    <link rel="stylesheet" href="login.css">
 </head>
 
 <body>
-    <h2>Welcome, <span id="username"></span>!</h2>
-    <a href="login.html">Logout</a> 
+    <div class="container">
+    <h2 class="title" >Welcome, <span id="username"></span>!</h2>
+    <a class="btn" href="login.html">Logout</a> 
 
     <script>
-        // Get username from query parameter and display it
         const urlParams = new URLSearchParams(window.location.search);
         const username = urlParams.get('username');
         document.getElementById('username').textContent = username;
     </script>
+    </div>
 </body>
 
 </html>

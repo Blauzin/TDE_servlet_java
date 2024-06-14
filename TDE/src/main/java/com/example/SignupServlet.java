@@ -17,7 +17,7 @@ public class SignupServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private String jdbcURL = "jdbc:mysql://localhost:3306/login_db";
     private String jdbcUsername = "root";
-    private String jdbcPassword = "210904";
+    private String jdbcPassword = "1234";
     private static final String INSERT_USER_SQL = "INSERT INTO users (username, password) VALUES (?, ?)";
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
