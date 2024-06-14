@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matéria</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div id="app">
+        <h1 id="pageTitle">Criar Nova Matéria</h1>
+        <form id="subjectForm">
+            <input type="hidden" id="studentId" name="studentId">
+            <input type="hidden" id="subjectId" name="subjectId">
+            <label for="subjectName">Nome da Disciplina:</label>
+            <input type="text" id="subjectName" name="subjectName" required>
+
+            <div id="rasContainer"></div>
+
+            <button type="button" onclick="addRA()">Adicionar RA</button>
+            <button type="submit" id="finalGradeButton">Calcular Nota Final</button>
+            <input type="number" id="targetGrade" placeholder="Nota Alvo">
+            <button type="button" onclick="calculateRequiredGrade()">Calcular Nota Necessária</button>
+        </form>
+    </div>
+    <script>
+        let raCount = 0;
+        const urlParams = new URLSearchParams(window.location.search);
+        const studentId = urlParams.get('studentId');
+        const subjectId = urlParams.get('subjectId');
+
+        document.getElementById('studentId').value = studentId;
+        if (subjectId) {
+            document.getElementById('pageTitle').textContent = 'Editar Matéria';
+            document.getElementById('subjectId').value = subjectId;
+            loadSubjectData(subjectId);
+        }
+
+        function addRA() {
+            raCount++;
+            const raContainer = document.getElementById('rasContainer');
+            const raDiv = document.createElement('div');
+            raDiv.className = 'ra';
+            raDiv.id = `ra${raCount}`;
+            raDiv.innerHTML = `
+                <h3>RA ${raCount}</h3>
+                <label for="raWeight${raCount}">Peso do RA:</label>
+                <input type="number" id="raWeight${raCount}" name="raWeight${raCount}" required>
+                
+                <div id="componentsContainer${raCount}"></div>
+                
+                <button type="button" onclick="addComponent(${raCount})">Adicionar Componente</button>
+                <button type="button" onclick="removeRA(${raCount})">Remover RA</button>
+            `;
+            raContainer.appendChild(raDiv);
+        }
+
+        function removeRA(raId) {
+            const raDiv = document.getElementById(`ra${raId}`);
+            raDiv.remove();
+        }
+
+        function addComponent(raId) {
+            const componentsContainer = document.getElementById(`componentsContainer${raId}`);
+            const componentCount = componentsContainer.childElementCount + 1;
+            const componentDiv = document.createElement('div');
+            componentDiv.className = 'component';
+            componentDiv.id = `component${raId}-${componentCount}`;
+            componentDiv.innerHTML = `
+                <h4>Componente ${componentCount}</h4>
+                <label for="componentType${raId}-${componentCount}">Tipo:</label>
+                <select id="componentType${raId}-${componentCount}" name="componentType${raId}-${componentCount}" required>
+                    <option value="trabalho">Trabalho</option>
+                    <option value="prova">Prova</option>
+                </select>
+                
+                <label for="componentWeight${raId}-${componentCount}">Peso:</label>
+                <input type="number" id="componentWeight${raId}-${componentCount}" name="componentWeight${raId}-${componentCount}" required>
+                
+                <label for="componentScore${raId}-${componentCount}">Nota:</label>
+                <input type="number" id="componentScore${raId}-${componentCount}" name="componentScore${raId}-${componentCount}">
+                
+                <button type="button" onclick="removeComponent(${raId}, ${componentCount})">Remover Componente</button>
+            `;
+            componentsContainer.appendChild(componentDiv);
+        }
+
+        function removeComponent(raId, componentId) {
+            const componentDiv = document.getElementById(`component${raId}-${componentId}`);
+            componentDiv.remove();
+        }
+
+        function loadSubjectData(subjectId) {
+            fetch(`/api/subjects/${subjectId}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('subjectName').value = data.name;
+                    data.ras.forEach((ra, index) => {
+                        addRA();
+                        document.getElementById(`raWeight${index + 1}`).value = ra.weight;
+                        ra.components.forEach((component, cIndex) => {
+                            addComponent(index + 1);
+                            document.getElementById(`componentType${index + 1}-${cIndex + 1}`).value = component.componentType;
+                            document.getElementById(`componentWeight${index + 1}-${cIndex + 1}`).value = component.weight;
+                            document.getElementById(`componentScore${index + 1}-${cIndex + 1}`).value = component.score;
+                        });
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        document.getElementById('subjectForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+            const url = subjectId ? `/api/subjects/${subjectId}` : '/api/subjects';
+            const method = subjectId ? 'PUT' : 'POST';
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error('Error:', error));
+        });
+
+        function calculateRequiredGrade() {
+            const targetGrade = document.getElementById('targetGrade').value;
+            const formData = new FormData(document.getElementById('subjectForm'));
+            const data = Object.fromEntries(formData.entries());
+            data.targetGrade = targetGrade;
+            fetch('/api/calculate/required', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(result => {
+                    // Display the result
+                    console.log(result);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+
+</html>
