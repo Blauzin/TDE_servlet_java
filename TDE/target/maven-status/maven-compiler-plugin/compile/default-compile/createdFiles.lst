@@ -1,3 +1,4 @@
 com\example\LoginServlet.class
+com\example\SignupServlet.class
 com\example\UserDAO.class
 com\example\User.class
