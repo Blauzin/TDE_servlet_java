@@ -10,29 +10,51 @@
 <body>
     <div class="container">
         <h2 class="title">Sign Up</h2>
-        <form action="signup" method="post">
-            <div class="error" id="errorMessage" style="display: none;">
-                Username already exists or invalid input
-            </div>
-            <div class="success" id="successMessage" style="display: none;">
-                User registered successfully
-            </div>
-            <div class="field">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
-            </div>
-            <div class="field">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <div>
-                <button class="btn" type="submit">Sign Up</button>
-            </div>
-        
-        </form>
+        <div class="error" id="errorMessage" style="display: none;">
+            Username already exists or invalid input
+        </div>
+        <div class="success" id="successMessage" style="display: none;">
+            User registered successfully
+        </div>
+        <div class="field">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="field">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div>
+            <button class="btn" type="button" onclick="signUp()">Sign Up</button>
+        </div>
         <button class="btn" onclick="window.location.href='login.html'">Return to Login</button>
     </div>
     <script>
+        function signUp() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            fetch('/login-project-1.0-SNAPSHOT/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+            })
+                .then(response => {
+                    if (response.redirected) {
+                        const urlParams = new URLSearchParams(response.url.split('?')[1]);
+                        if (urlParams.has('error')) {
+                            document.getElementById('errorMessage').style.display = 'block';
+                        }
+                        if (urlParams.has('success')) {
+                            document.getElementById('successMessage').style.display = 'block';
+                        }
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.has('error')) {
             document.getElementById('errorMessage').style.display = 'block';
